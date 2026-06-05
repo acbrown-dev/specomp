@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+src/abstract/compressors.py
+src/specomp.egg-info/PKG-INFO
+src/specomp.egg-info/SOURCES.txt
+src/specomp.egg-info/dependency_links.txt
+src/specomp.egg-info/top_level.txt
