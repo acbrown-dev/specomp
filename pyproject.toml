@@ -7,10 +7,14 @@ name = "specomp"
 version = "0.1.0"
 description = "API for HSI compression"
 readme = "README.md"
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "spectral",
+]
 
-[project.scripts]
+[dependency-groups]
+dev = ["pytest"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

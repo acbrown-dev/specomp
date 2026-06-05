@@ -23,4 +23,4 @@ class LossyCompressor(Compressor, ABC):
 
     @abstractmethod
     def error_bound(self) -> float | None:
-        """Guaranted upper bound on reconstruction error, or None for no guarantee"""
+        """Guaranteed upper bound on reconstruction error, or None for no guarantee"""
