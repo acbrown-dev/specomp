@@ -24,3 +24,25 @@ Finally, most RGB image compression algorithms just don't work images with more 
 Phase 1: Python prototyping
 
 Phase 2: Rust optimization.
+
+## Venv setup
+
+1. Install UV if not already
+
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Clone and install
+
+```bash
+gh repo clone acbrown-dev/specomp
+cd specomp
+uv sync --group dev
+```
+
+3. Run tests
+
+```bash
+uv run pytest
+```
