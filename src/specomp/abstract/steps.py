@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Type
 
 class Step(ABC):
-    subclass_registry = []
+    subclass_registry = dict()
 
     @property
     @abstractmethod
@@ -22,9 +22,8 @@ class Step(ABC):
     def inverse(self, x, side):
         pass
 
-    def __init_subclass__(cls, **kwargs):
-        super().__init__subclass(**kwargs)
-        Step.registry[cls.__name__] = cls
+    def __init_subclass__(cls):
+        Step.subclass_registry[cls.__name__] = cls
 
 
 class LosslessStep(Step):

@@ -27,7 +27,8 @@ class ArrToByteStep(LosslessStep):
         return bytes
 
     def forward(self, x : np.ndarray):
-        x.tobytes(), x.dtype
+        return x.tobytes(), (x.dtype, x.shape)
 
-    def inverse(self, x : bytes, dtype : np.dtype) -> np.ndarray:
-        return np.from_buffer(x,dtype)
+    def inverse(self, x : bytes, dtype_and_shape : tuple) -> np.ndarray:
+        dtype, shape = dtype_and_shape
+        return np.frombuffer(x,dtype).reshape(shape)

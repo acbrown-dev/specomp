@@ -7,7 +7,5 @@ class IdentityCompressor(LosslessCompressor):
 
     @property
     def pipeline_steps(self) -> tuple[Step]:
-        return (IdentityStep, ArrToByteStep)
+        return (IdentityStep(), ArrToByteStep())
 
-    def decompress(self, compressed_data: bytes, sides):
-        return super().decompress(compressed_data)

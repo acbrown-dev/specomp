@@ -14,6 +14,7 @@ class Compressor(ABC):
     @abstractmethod
     def pipeline_steps(self) -> tuple[Step]:
         pass
+
     
     def compress(self, input_data : np.ndarray):
         x = input_data
@@ -25,13 +26,13 @@ class Compressor(ABC):
         
     def decompress(self, compressed_data : bytes, sides):
         x = compressed_data
-        for step, side in reversed(zip(self.pipeline_steps, sides)):
+        steps_and_sides = list(zip(self.pipeline_steps,sides))
+        for step, side in reversed(steps_and_sides):
             x = step.inverse(x, side)
         return x
 
-    def __init_subclass__(cls, **kwargs):
-        super().__init__subclass(**kwargs)
-        Compressor.registry[cls.__name__] = cls
+    def __init_subclass__(cls):
+        Compressor.subclass_registry[cls.__name__] = cls
 
 class LosslessCompressor(Compressor):
     pass
