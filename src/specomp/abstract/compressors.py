@@ -2,12 +2,9 @@ from abc import ABC, abstractmethod
 import numpy as np
 from specomp.abstract.steps import Step
 import inspect
-'''
-The idea is to make tests very DRY and the addition of new tests for new compressors mostly automatic.
 
-The tests will use class name and inspect function signatures to determine what specific inputs to test and how to validate decompression.
-'''
 class Compressor(ABC):
+    accepted_inputs : list
     subclass_registry = dict[str,type["Compressor"]]()
 
     @property
@@ -33,6 +30,8 @@ class Compressor(ABC):
 
     def __init_subclass__(cls):
         Compressor.subclass_registry[cls.__name__] = cls
+        if not inspect.isabstract(cls) and "accepted_inputs" not in cls.__dict__:
+            raise TypeError(f"{cls.__name__} must define accepted_inputs")
 
 class LosslessCompressor(Compressor):
     pass
