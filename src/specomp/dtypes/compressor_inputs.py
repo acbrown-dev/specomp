@@ -33,10 +33,14 @@ class DType3DArr(InputTypeBase):
             and data.ndim == 3
         )
 # concrete classes
+class Uint8Cube(DType3DArr):
+    dtype = np.uint8
+
 class UInt16Cube(DType3DArr):
     dtype = np.uint16
 
-
 class UInt32Cube(DType3DArr):
     dtype = np.uint32
+
+ARRAYS_3D = (Uint8Cube, UInt16Cube, UInt32Cube, )
     

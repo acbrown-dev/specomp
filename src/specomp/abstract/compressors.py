@@ -4,7 +4,7 @@ from specomp.abstract.steps import Step
 import inspect
 
 class Compressor(ABC):
-    accepted_inputs : list
+    accepted_inputs : tuple
     subclass_registry = dict[str,type["Compressor"]]()
 
     @property

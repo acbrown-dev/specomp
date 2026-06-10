@@ -5,7 +5,7 @@ from specomp.dtypes.compressor_inputs import UInt16Cube, UInt32Cube
 import numpy as np
 
 class IdentityCompressor(LosslessCompressor):
-    accepted_inputs = [UInt16Cube, UInt32Cube]
+    accepted_inputs = (UInt16Cube, UInt32Cube)
 
     @property
     def pipeline_steps(self) -> tuple[Step]:

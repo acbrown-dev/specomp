@@ -1,15 +1,9 @@
 from specomp.abstract.steps import LosslessStep, LossyStep
 import numpy as np
+from specomp.dtypes.compressor_inputs import ARRAYS_3D
 
 class IdentityStep(LosslessStep):
-    
-    @property
-    def domain(self):
-        return np.ndarray
-
-    @property
-    def range(self):
-        return np.ndarray
+    domain = ARRAYS_3D
 
     def forward(self, x):
         return x, None
@@ -18,13 +12,7 @@ class IdentityStep(LosslessStep):
         return x
 
 class ArrToByteStep(LosslessStep):
-    @property
-    def domain(self):
-        return np.ndarray
-
-    @property
-    def range(self):
-        return bytes
+    domain = ARRAYS_3D
 
     def forward(self, x : np.ndarray):
         return x.tobytes(), (x.dtype, x.shape)

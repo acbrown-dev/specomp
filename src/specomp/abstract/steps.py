@@ -2,17 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Type
 
 class Step(ABC):
-    subclass_registry = dict()
-
-    @property
-    @abstractmethod
-    def domain(self) -> Type:
-        pass
-
-    @property
-    @abstractmethod
-    def range(self) -> Type:
-        pass
+    subclass_registry = dict[str,Type["Step"]]()
+    domain : list[Type]
+    range : list[Type]
 
     @abstractmethod
     def forward(self, x):
