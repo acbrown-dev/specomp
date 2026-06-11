@@ -6,3 +6,4 @@ src/specomp.egg-info/dependency_links.txt
 src/specomp.egg-info/requires.txt
 src/specomp.egg-info/top_level.txt
 tests/test_compressors.py
+tests/test_steps.py
