@@ -1,0 +1,61 @@
+---
+title: Delta encoding and zstd
+format: html
+jupyter: python3
+---
+
+Hyperspectral pixels usually change slowly from one band to the next.
+Delta encoding along the spectral axis turns those smooth profiles into
+small values, which generic compressors like zstd handle much better.
+
+```{python}
+import numpy as np
+import zstandard as zstd
+
+from specomp.steps.delta_encoding import UnsignedDeltaEncoding
+```
+
+## Synthetic cube with smooth spectra
+
+Each pixel's spectrum is a cumulative sum of small random steps, mimicking
+gradual reflectance change across bands.
+
+```{python}
+h, w, bands = 128, 128, 200
+rng = np.random.default_rng(0)
+
+increments = rng.integers(1, 30, size=(h, w, bands), dtype=np.uint16)
+cube = np.cumsum(increments, axis=2).astype(np.uint16)
+
+raw_bytes = cube.nbytes
+print(f"uncompressed: {raw_bytes / 1e6:.2f} MB")
+```
+
+## Compress with zstd, with and without delta encoding
+
+```{python}
+def zstd_compress(data: bytes, level: int = 3) -> bytes:
+    return zstd.ZstdCompressor(level=level).compress(data)
+
+
+raw_compressed = zstd_compress(cube.tobytes())
+
+step = UnsignedDeltaEncoding(spectral_dim=2)
+encoded, _ = step.forward(cube)
+delta_compressed = zstd_compress(encoded.tobytes())
+
+print(f"zstd on raw cube:   {len(raw_compressed) / 1e6:.2f} MB")
+print(f"zstd after delta:   {len(delta_compressed) / 1e6:.2f} MB")
+print(f"delta wins by:      {len(raw_compressed) / len(delta_compressed):.1f}x")
+```
+
+Delta encoding is lossless — decompress zstd, then invert the step:
+
+```{python}
+decoded_bytes = zstd.ZstdDecompressor().decompress(delta_compressed)
+decoded_arr = np.frombuffer(decoded_bytes, dtype=cube.dtype).reshape(cube.shape)
+restored = step.inverse(decoded_arr, None)
+
+assert np.array_equal(restored, cube)
+print("round-trip OK")
+```
