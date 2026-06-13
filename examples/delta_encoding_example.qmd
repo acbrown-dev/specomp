@@ -12,7 +12,7 @@ small values, which generic compressors like zstd handle much better.
 import numpy as np
 import zstandard as zstd
 
-from specomp.steps.delta_encoding import UnsignedDeltaEncoding
+from specomp.compressors import SimpleDeltaEncoderCompressor
 ```
 
 ## Synthetic cube with smooth spectra
@@ -40,21 +40,18 @@ def zstd_compress(data: bytes, level: int = 3) -> bytes:
 
 raw_compressed = zstd_compress(cube.tobytes())
 
-step = UnsignedDeltaEncoding(spectral_dim=2)
-encoded, _ = step.forward(cube)
-delta_compressed = zstd_compress(encoded.tobytes())
+compressor = SimpleDeltaEncoderCompressor(zstd_level=3)
+delta_compressed, sides = compressor.compress(cube)
 
 print(f"zstd on raw cube:   {len(raw_compressed) / 1e6:.2f} MB")
 print(f"zstd after delta:   {len(delta_compressed) / 1e6:.2f} MB")
 print(f"delta wins by:      {len(raw_compressed) / len(delta_compressed):.1f}x")
 ```
 
-Delta encoding is lossless — decompress zstd, then invert the step:
+The compressor chains delta encoding, array serialization, and zstd. Round-trip is lossless:
 
 ```{python}
-decoded_bytes = zstd.ZstdDecompressor().decompress(delta_compressed)
-decoded_arr = np.frombuffer(decoded_bytes, dtype=cube.dtype).reshape(cube.shape)
-restored = step.inverse(decoded_arr, None)
+restored = compressor.decompress(delta_compressed, sides)
 
 assert np.array_equal(restored, cube)
 print("round-trip OK")
