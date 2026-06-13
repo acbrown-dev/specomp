@@ -1,1 +1,2 @@
-from .compressors import *
+from .generic_compressors import *
+from .simple_delta_encoding_compressor import SimpleDeltaEncoderCompressor

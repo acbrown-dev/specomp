@@ -33,10 +33,24 @@ class DType3DArr(InputTypeBase):
             and data.ndim == 3
         )
 # concrete classes
+class UInt8Cube(DType3DArr):
+    dtype = np.uint8
+
 class UInt16Cube(DType3DArr):
     dtype = np.uint16
 
-
 class UInt32Cube(DType3DArr):
     dtype = np.uint32
+
+UINT_ARRAYS_3D = (UInt8Cube, UInt16Cube, UInt32Cube )
+
+class Bytes(InputTypeBase):
+    @classmethod
+    def generate_example(cls):
+        n = 100
+        return np.arange(0,n,dtype=np.int32).tobytes()
+    @classmethod
+    def validate(cls, data: bytes):
+        return isinstance(data, bytes)
+
     
