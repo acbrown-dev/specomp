@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import specomp.compressors  # noqa: F401
-from specomp.abstract.compressors import Compressor, LosslessCompressor, LossyCompressor
+from specomp.abstract.compressors import Compressor, LossyCompressor
 
 
 def _round_trip_cases():

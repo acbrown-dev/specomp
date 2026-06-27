@@ -1,4 +1,4 @@
-from specomp.abstract.steps import LosslessStep, LossyStep
+from specomp.abstract.steps import LosslessStep
 import numpy as np
 from specomp.dtypes.compressor_inputs import UINT_ARRAYS_3D, Bytes
 import zstandard

@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 import specomp.steps  # noqa: F401
-from specomp.abstract.steps import Step, LosslessStep, LossyStep
+from specomp.abstract.steps import Step, LossyStep
 
 
 def _round_trip_cases():
