@@ -2,3 +2,6 @@
 *.egg-info/
 __pycache__/
 .pytest_cache/
+
+# Local algorithm research (notes, benchmarks, prototypes)
+research/
