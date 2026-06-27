@@ -1,23 +1,12 @@
-import inspect
-
 import numpy as np
 import pytest
 
 import specomp.compressors  # noqa: F401
 from specomp.abstract.compressors import Compressor, LosslessCompressor, LossyCompressor
 
-_ABSTRACT = {Compressor, LosslessCompressor, LossyCompressor}
-
-
-def _concrete():
-    return [
-        cls for cls in Compressor.subclass_registry.values()
-        if cls not in _ABSTRACT and not inspect.isabstract(cls)
-    ]
-
 
 def _round_trip_cases():
-    for cls in _concrete():
+    for cls in Compressor.subclass_registry.values():
         for input_type in cls.accepted_inputs:
             yield cls, input_type
 

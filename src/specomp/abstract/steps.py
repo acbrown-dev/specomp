@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import inspect
 from typing import Type
 
 class Step(ABC):
@@ -15,7 +16,8 @@ class Step(ABC):
         pass
 
     def __init_subclass__(cls):
-        Step.subclass_registry[cls.__name__] = cls
+        if not inspect.isabstract(cls):
+            Step.subclass_registry[cls.__name__] = cls
 
 
 class LosslessStep(Step):

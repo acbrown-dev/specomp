@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import inspect
 import numpy as np
 
 # base classes
@@ -16,7 +17,8 @@ class InputTypeBase(ABC):
         pass
 
     def __init_subclass__(cls) -> None:
-        InputTypeBase.subclass_registry[cls.__name__] = cls
+        if not inspect.isabstract(cls):
+            InputTypeBase.subclass_registry[cls.__name__] = cls
         
 
 class DType3DArr(InputTypeBase):

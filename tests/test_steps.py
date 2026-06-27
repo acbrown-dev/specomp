@@ -1,23 +1,12 @@
-import inspect
-
 import numpy as np
 import pytest
 
-import specomp.compressors  # noqa: F401
+import specomp.steps  # noqa: F401
 from specomp.abstract.steps import Step, LosslessStep, LossyStep
-
-_ABSTRACT = {Step, LosslessStep, LossyStep}
-
-
-def _concrete():
-    return [
-        cls for cls in Step.subclass_registry.values()
-        if cls not in _ABSTRACT and not inspect.isabstract(cls)
-    ]
 
 
 def _round_trip_cases():
-    for cls in _concrete():
+    for cls in Step.subclass_registry.values():
         for input_type in cls.domain:
             yield cls, input_type
 

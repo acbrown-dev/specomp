@@ -29,9 +29,10 @@ class Compressor(ABC):
         return x
 
     def __init_subclass__(cls):
-        Compressor.subclass_registry[cls.__name__] = cls
-        if not inspect.isabstract(cls) and "accepted_inputs" not in cls.__dict__:
-            raise TypeError(f"{cls.__name__} must define accepted_inputs")
+        if not inspect.isabstract(cls):
+            Compressor.subclass_registry[cls.__name__] = cls
+            if "accepted_inputs" not in cls.__dict__:
+                raise TypeError(f"{cls.__name__} must define accepted_inputs")
 
 class LosslessCompressor(Compressor):
     pass
