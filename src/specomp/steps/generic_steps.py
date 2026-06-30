@@ -4,7 +4,8 @@ from specomp.dtypes.compressor_inputs import UINT_ARRAYS_3D, Bytes
 import zstandard
 
 class IdentityStep(LosslessStep):
-    domain =UINT_ARRAYS_3D
+    domain = UINT_ARRAYS_3D
+    range = UINT_ARRAYS_3D
 
     def forward(self, x):
         return x, None
@@ -13,7 +14,8 @@ class IdentityStep(LosslessStep):
         return x
 
 class ArrToByteStep(LosslessStep):
-    domain =UINT_ARRAYS_3D
+    domain = UINT_ARRAYS_3D
+    range = (Bytes,)
 
     def forward(self, x : np.ndarray):
         return x.tobytes(), (x.dtype, x.shape)
@@ -24,6 +26,7 @@ class ArrToByteStep(LosslessStep):
 
 class ZstdStep(LosslessStep):
     domain = (Bytes,)
+    range = (Bytes,)
     def __init__(self, level=3) -> None:
         super().__init__()
         self.level = 3

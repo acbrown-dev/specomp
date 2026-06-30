@@ -3,6 +3,7 @@ import numpy as np
 from specomp.dtypes.compressor_inputs import UINT_ARRAYS_3D
 class UnsignedDeltaEncoding(LosslessStep):
     domain = UINT_ARRAYS_3D
+    range = UINT_ARRAYS_3D
 
     def __init__(self, spectral_dim: int = 2):
         self.spectral_dim = spectral_dim
