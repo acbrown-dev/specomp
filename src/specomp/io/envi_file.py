@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -42,7 +43,7 @@ class SpecompEnviFile:
     def load(self) -> np.ndarray:
         if self._closed:
             raise ValueError("Cannot load from a closed SpecompEnviFile.")
-        with open(self.filename, "rb") as data_file:
+        with builtins.open(self.filename, "rb") as data_file:
             compressed = data_file.read()
         return self.compressor.decompress(compressed, self.sides)
 

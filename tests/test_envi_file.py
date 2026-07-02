@@ -1,12 +1,21 @@
-import json
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 import specomp.compressors  # noqa: F401
 from specomp.abstract.compressors import Compressor
 from specomp.compressors import SimpleDeltaEncoderCompressor
+from specomp.io.envi import (
+    SPECOMP_COMPRESSED_KEY,
+    SPECOMP_COMPRESSOR_KEY,
+    SPECOMP_COMPRESSOR_PARAMS_KEY,
+    SPECOMP_SIDES_KEY,
+    SPECOMP_VERSION_KEY,
+    _decode_header_json,
+    _decode_header_text,
+    _encode_header_json,
+    _encode_header_text,
+)
 from specomp.io.envi_file import SpecompEnviFile
 from specomp.io.sides import deserialize_sides, serialize_sides
 
@@ -25,11 +34,11 @@ def _write_minimal_specomp_files(tmp_path: Path, cube: np.ndarray) -> Path:
         "data type": SpecompEnviFile.envi_dtype_code(cube.dtype),
         "interleave": "bip",
         "byte order": "0",
-        "specomp compressed": "true",
-        "specomp compressor": type(compressor).__name__,
-        "specomp compressor params": json.dumps(compressor.config()),
-        "specomp sides": serialize_sides(sides),
-        "specomp version": "0.1.0",
+        SPECOMP_COMPRESSED_KEY: "true",
+        SPECOMP_COMPRESSOR_KEY: type(compressor).__name__,
+        SPECOMP_COMPRESSOR_PARAMS_KEY: _encode_header_json(compressor.config()),
+        SPECOMP_SIDES_KEY: _encode_header_text(serialize_sides(sides)),
+        SPECOMP_VERSION_KEY: "0.1.0",
     }
     spec_path.write_bytes(payload)
     with hdr_path.open("w", encoding="utf-8") as hdr_file:
@@ -47,10 +56,10 @@ def test_specomp_envi_file_load_round_trip(tmp_path):
         for line in hdr_path.read_text(encoding="utf-8").splitlines()[1:]
         if " = " in line
     }
-    compressor = Compressor.subclass_registry[header["specomp compressor"]].from_config(
-        json.loads(header["specomp compressor params"])
+    compressor = Compressor.subclass_registry[header[SPECOMP_COMPRESSOR_KEY]].from_config(
+        _decode_header_json(header[SPECOMP_COMPRESSOR_PARAMS_KEY])
     )
-    sides = deserialize_sides(header["specomp sides"])
+    sides = deserialize_sides(_decode_header_text(header[SPECOMP_SIDES_KEY]))
     with SpecompEnviFile(tmp_path / "scene.spec", header, compressor, sides) as img:
         restored = img.load()
         assert img.shape == cube.shape
