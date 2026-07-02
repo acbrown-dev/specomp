@@ -3,6 +3,7 @@ import pytest
 
 import specomp.compressors  # noqa: F401
 from specomp.abstract.compressors import Compressor, LossyCompressor
+from specomp.compressors import SimpleDeltaEncoderCompressor
 
 
 def _round_trip_cases():
@@ -29,3 +30,9 @@ def test_round_trip_on_example_data(cls, input_type):
         assert np.max(np.abs(out.astype(float) - arr)) <= c.error_bound
     else:
         np.testing.assert_array_equal(out, arr)
+
+
+def test_compressor_config_round_trip():
+    original = SimpleDeltaEncoderCompressor(zstd_level=7)
+    restored = SimpleDeltaEncoderCompressor.from_config(original.config())
+    assert restored.zstd_level == 7

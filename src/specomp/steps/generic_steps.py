@@ -29,7 +29,7 @@ class ZstdStep(LosslessStep):
     range = (Bytes,)
     def __init__(self, level=3) -> None:
         super().__init__()
-        self.level = 3
+        self.level = level
 
     def forward(self, input_bytes):
         return zstandard.compress(input_bytes,level=self.level), None

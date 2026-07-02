@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+import dataclasses
+import inspect
 import numpy as np
 from specomp.abstract.steps import Step
-import inspect
 
 class Compressor(ABC):
     accepted_inputs : tuple
@@ -27,6 +28,19 @@ class Compressor(ABC):
         for step, side in reversed(steps_and_sides):
             x = step.inverse(x, side)
         return x
+
+    def config(self) -> dict:
+        if not dataclasses.is_dataclass(self):
+            return {}
+        return {
+            field.name: getattr(self, field.name)
+            for field in dataclasses.fields(self)
+            if field.init
+        }
+
+    @classmethod
+    def from_config(cls, params: dict):
+        return cls(**params)
 
     def __init_subclass__(cls):
         if not inspect.isabstract(cls):
